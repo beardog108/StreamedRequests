@@ -15,7 +15,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 '''
-from requests import Request, session
-from . import get, post
-get = get.get
-post = post.post
+from . import exceptions
+class SizeValidator:
+    def __init__(self, max_size):
+        self.max_size = 0
+        self.size = 0
+
+    def add(self, amount):
+        self.size += amount
+        if self.size >= self.max_size:
+            raise exceptions.ResponseLimitReached("The request has reached the maximum size limit of %s" % [self.max_size])
+    
+    def reset(self):
+        self.size = 0

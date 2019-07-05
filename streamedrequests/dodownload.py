@@ -15,7 +15,24 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 '''
-from requests import Request, session
-from . import get, post
-get = get.get
-post = post.post
+import threading
+
+def __run_callback(data, sync, callback=None):
+    if callback is None:
+        return
+    if sync:
+        callback(data)
+    else:
+        threading.Thread(target=callback, args=(data,)).start()
+    
+def __do_download(req, max_size, chunk_size, callback, sync):
+    ret_data = b''
+    if chunk_size == 0:
+        raise ValueError("Chunk size cannot be zero")
+    for chunk in req.iter_content(chunk_size=chunk_size):
+        if max_size > 0:
+            chunk_count.add(chunk_size)
+        if not callback is None:
+            __run_callback(chunk, sync, callback)
+        ret_data += chunk
+    return ret_data

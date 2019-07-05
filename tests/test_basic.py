@@ -22,12 +22,27 @@ import streamedrequests
 def get_test_id():
     return str(uuid.uuid4()) + '.dat'
 
+def _test_callback(text):
+    print('got', text)
+
 class TestInit(unittest.TestCase):
 
-    def test_init(self):
-        streamedrequests.get_request("test", request_headers=None, sync=True, max_size=0,
-        connect_timeout=0, stream_timeout=0, proxy=None)
+    def test_basic(self):
+        streamedrequests.get('https://example.com/')
 
-        return
+    def test_callback(self):
+        pass
+        streamedrequests.get('https://example.com/', chunk_size=1, callback=_test_callback)
+    
+    def test_async(self):
+        streamedrequests.get('https://example.com/', chunk_size=1, callback=_test_callback, sync=False)
+
+    def test_zero_chunk_size(self):
+        try:
+            streamedrequests.get('https://example.com/', chunk_size=0)
+        except ValueError:
+            pass
+        else:
+            self.assertTrue(failUnless)
 
 unittest.main()

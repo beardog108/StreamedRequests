@@ -15,7 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 '''
-from requests import Request, session
-from . import get, post
-get = get.get
-post = post.post
+import requests
+def post(url, post_data=None, request_headers=None, sync=True, 
+        max_size=0, connect_timeout=0, stream_timeout=0, proxy=None):
+        return
