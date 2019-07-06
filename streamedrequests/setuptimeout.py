@@ -15,8 +15,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 '''
-import requests
-def post(url, post_data=None, request_headers=None, sync=True, 
-    max_size=0, chunk_size=1000, connect_timeout=60, stream_timeout=0,
-    proxy={}, callback=None, allow_redirects=True):
-    return
+def __setup_timeout(connect_timeout, stream_timeout):
+    timeouts = (connect_timeout, stream_timeout)
+
+    if stream_timeout == 0: # If timeout for stream is default, use connect timeout for both
+        timeouts = connect_timeout
+    return timeouts

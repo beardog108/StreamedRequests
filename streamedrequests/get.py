@@ -16,19 +16,17 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 '''
 import requests
-from . import exceptions, responsesize, dodownload
+from . import exceptions, responsesize, dodownload, setuptimeout
 def get(url, query_parameters=None, request_headers=None, sync=True, 
     max_size=0, chunk_size=1000, connect_timeout=60, stream_timeout=0,
-    proxy=None, callback=None, allow_redirects=True):
+    proxy={}, callback=None, allow_redirects=True):
 
     chunk_count = responsesize.SizeValidator(max_size) # Class to verify if the stream is staying within the max_size
-    timeouts = (connect_timeout, stream_timeout)
 
-    if stream_timeout == 0: # If timeout for stream is default, use connect timeout for both
-        timeouts = connect_timeout
+    timeouts = setuptimeout.__setup_timeout(connect_timeout, stream_timeout)
     
     req = requests.get(url, params=query_parameters, headers=request_headers,
-        timeout=timeouts, stream=True, allow_redirects=allow_redirects)
+        timeout=timeouts, stream=True, allow_redirects=allow_redirects, proxies=proxy)
     
     return dodownload.__do_download(req, max_size, chunk_size, callback, sync)
     

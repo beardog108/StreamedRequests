@@ -15,34 +15,47 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 '''
-import sys, os, unittest
+import sys, os, unittest, threading
+from http.server import HTTPServer, SimpleHTTPRequestHandler
+import requests
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../")
 import streamedrequests
 
 def get_test_id():
     return str(uuid.uuid4()) + '.dat'
 
+def run(server_class=HTTPServer, handler_class=SimpleHTTPRequestHandler):
+    server_address = ('127.0.0.1', 8000)
+    httpd = server_class(server_address, handler_class)
+    httpd.serve_forever()
+
 def _test_callback(text):
-    print('got', text)
+    return
+    #print('got', text)
 
 class TestInit(unittest.TestCase):
 
+    def test_requests(self):
+        requests.get('http://127.0.0.1:8000/')
+
     def test_basic(self):
-        streamedrequests.get('https://example.com/')
+        streamedrequests.get('http://127.0.0.1:8000/')
 
     def test_callback(self):
         pass
-        streamedrequests.get('https://example.com/', chunk_size=1, callback=_test_callback)
+        streamedrequests.get('http://127.0.0.1:8000/', chunk_size=1, callback=_test_callback)
     
     def test_async(self):
-        streamedrequests.get('https://example.com/', chunk_size=1, callback=_test_callback, sync=False)
+        streamedrequests.get('http://127.0.0.1:8000/', chunk_size=1, callback=_test_callback, sync=False)
 
     def test_zero_chunk_size(self):
         try:
-            streamedrequests.get('https://example.com/', chunk_size=0)
+            streamedrequests.get('http://127.0.0.1:8000/', chunk_size=0)
         except ValueError:
             pass
         else:
             self.assertTrue(failUnless)
+
+threading.Thread(target=run, daemon=True).start()
 
 unittest.main()
