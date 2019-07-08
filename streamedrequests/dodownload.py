@@ -18,11 +18,11 @@
 import threading
 
 def __run_callback(data, sync, callback=None):
-    if callback is None:
+    if callback is None: # Do nothing if there is no callback
         return
-    if sync:
+    if sync: # If synchronous (default), run callback normally
         callback(data)
-    else:
+    else: # If async, spawn a new thread (not good for CPU-bound cases)
         threading.Thread(target=callback, args=(data,)).start()
     
 def __do_download(req, max_size, chunk_size, callback, sync):

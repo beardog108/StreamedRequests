@@ -1,2 +1,4 @@
 venv/*
 streamedrequests/__pycache__/*
+testdata/*
+.vscode/*

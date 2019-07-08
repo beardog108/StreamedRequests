@@ -23,7 +23,8 @@ def get(url, query_parameters=None, request_headers=None, sync=True,
 
     chunk_count = responsesize.SizeValidator(max_size) # Class to verify if the stream is staying within the max_size
 
-    timeouts = setuptimeout.__setup_timeout(connect_timeout, stream_timeout)
+    timeouts = setuptimeout.__setup_timeout(connect_timeout, stream_timeout) # Get a timeout int or tuple
+    # Requests uses separate value for connect vs stream timeout
     
     req = requests.get(url, params=query_parameters, headers=request_headers,
         timeout=timeouts, stream=True, allow_redirects=allow_redirects, proxies=proxy)
