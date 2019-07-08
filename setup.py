@@ -7,4 +7,10 @@ setup(name='streamedrequests',
       author_email='beardog@mailbox.org',
       url='https://github.com/beardog108/streamedrequests',
       packages=['streamedrequests'],
+      install_requires=['requests'],
+      classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+        "Operating System :: OS Independent",
+      ],
      )
