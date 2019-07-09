@@ -70,7 +70,18 @@ class TestInit(unittest.TestCase):
             raise ValueError("test not found in post test data")
 
     def test_basic(self):
-        streamedrequests.get('http://127.0.0.1:8000/')
+        if "test" not in streamedrequests.get('http://127.0.0.1:8000/')[1]:
+            raise ValueError("test not found in response text")
+    
+    def test_max_size_fail(self):
+        with self.assertRaises(streamedrequests.exceptions.ResponseLimitReached):
+            streamedrequests.get('http://127.0.0.1:8000/', max_size=10)
+        with self.assertRaises(streamedrequests.exceptions.ResponseLimitReached):
+            streamedrequests.post('http://127.0.0.1:%s/' % (POST_PORT,), post_data='test', max_size=1)
+
+    def test_max_size_pass(self):
+        streamedrequests.get('http://127.0.0.1:8000/', max_size=100000)
+        streamedrequests.post('http://127.0.0.1:%s/' % (POST_PORT,), post_data='test', max_size=100000)
 
     def test_fail(self):
         with self.assertRaises(requests.exceptions.ConnectionError):

@@ -16,6 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 '''
 import threading
+from . import responsesize
 
 def __run_callback(data, sync, callback=None):
     if callback is None: # Do nothing if there is no callback
@@ -26,6 +27,7 @@ def __run_callback(data, sync, callback=None):
         threading.Thread(target=callback, args=(data,)).start()
     
 def __do_download(req, max_size, chunk_size, callback, sync):
+    chunk_count = responsesize.SizeValidator(max_size) # Class to verify if the stream is staying within the max_size
     ret_data = b''
     if chunk_size == 0:
         raise ValueError("Chunk size cannot be zero")
@@ -35,4 +37,6 @@ def __do_download(req, max_size, chunk_size, callback, sync):
         if not callback is None:
             __run_callback(chunk, sync, callback)
         ret_data += chunk
-    return ret_data
+    if 'text' in req.headers['content-type']:
+        ret_data = ret_data.decode('utf-8')
+    return (req, ret_data)

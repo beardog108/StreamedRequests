@@ -16,12 +16,10 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 '''
 import requests
-from . import exceptions, responsesize, dodownload, setuptimeout
+from . import exceptions, dodownload, setuptimeout
 def get(url, query_parameters=None, request_headers=None, sync=True, 
     max_size=0, chunk_size=1000, connect_timeout=60, stream_timeout=0,
     proxy={}, callback=None, allow_redirects=True):
-
-    chunk_count = responsesize.SizeValidator(max_size) # Class to verify if the stream is staying within the max_size
 
     timeouts = setuptimeout.__setup_timeout(connect_timeout, stream_timeout) # Get a timeout int or tuple
     # Requests uses separate value for connect vs stream timeout
